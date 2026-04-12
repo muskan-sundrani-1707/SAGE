@@ -1,12 +1,12 @@
 /**
  * SAGE - Accessibility
- * Language toggle, large text, voice narration
+ * Language toggle, large text, voice narration (short intro on home)
  */
 
 function updateUIText() {
     const lang = currentLanguage;
     const attr = lang === 'hi' ? 'data-hi' : 'data-en';
-    document.querySelectorAll(`[${attr}]`).forEach(el => {
+    document.querySelectorAll(`[${attr}]`).forEach((el) => {
         const text = el.getAttribute(attr);
         if (text) el.textContent = text;
     });
@@ -34,17 +34,14 @@ function initAccessibility() {
         document.body.classList.toggle('large-text', isLargeText);
     });
 
-    voiceNarrationBtn.addEventListener('click', () => {
-        const heroTitle = document.querySelector('.hero-title')?.textContent;
-        const heroSubtitle = document.querySelector('.section-subtitle')?.textContent;
-        const text = [heroTitle, heroSubtitle].filter(Boolean).join('. ');
-        if (text && synthesis) {
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = currentLanguage === 'hi' ? 'hi-IN' : 'en-IN';
-            utterance.rate = 0.85;
-            synthesis.cancel();
-            synthesis.speak(utterance);
-        }
+    voiceNarrationBtn.addEventListener('click', async () => {
+        const heroTitle = document.querySelector('#home .hero-title')?.textContent?.trim();
+        const heroLine = document.querySelector('#home .illustration-text')?.textContent?.trim();
+        const text = [heroTitle, heroLine].filter(Boolean).join('. ');
+        if (!text) return;
+        const lang = currentLanguage === 'hi' ? 'hi' : 'en';
+        synthesis.cancel();
+        await sageSpeakWithFallback(text, lang, synthesis);
     });
 
     updateUIText();
