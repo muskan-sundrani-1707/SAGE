@@ -1,0 +1,26 @@
+<section id="voice" class="section voice-section">
+    <div class="container">
+        <h2 class="section-title" data-en="Voice Assistant" data-hi="आवाज़ सहायक">Voice Assistant</h2>
+        <p class="section-subtitle" data-en="Speak naturally - we'll help you with digital tasks" data-hi="स्वाभाविक रूप से बोलें - हम डिजिटल कार्यों में मदद करेंगे">
+            Speak naturally – we'll help you with digital tasks
+        </p>
+        <div class="voice-interface">
+            <button class="mic-button" id="micButton" aria-label="Start speaking">
+                <span class="mic-icon">🎤</span>
+                <span class="mic-label" data-en="Tap to Speak" data-hi="बोलने के लिए टैप करें">Tap to Speak</span>
+            </button>
+            <div class="voice-box">
+                <label class="voice-label" data-en="What you said:" data-hi="आपने क्या कहा:">What you said:</label>
+                <div class="voice-textbox" id="speechText" role="status" aria-live="polite"></div>
+            </div>
+            <div class="voice-box">
+                <label class="voice-label" data-en="Assistant response:" data-hi="सहायक जवाब:">Assistant response:</label>
+                <div class="voice-textbox" id="responseText" role="status" aria-live="polite"></div>
+            </div>
+            <button class="btn btn-primary btn-large" id="speakResponseBtn">
+                <span class="btn-icon">🔊</span>
+                <span class="btn-text" data-en="Speak Response" data-hi="जवाब बोलें">Speak Response</span>
+            </button>
+        </div>
+    </div>
+</section>

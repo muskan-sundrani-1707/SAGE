@@ -1,0 +1,24 @@
+<section id="scam" class="section scam-section">
+    <div class="container">
+        <h2 class="section-title" data-en="Scam Checker" data-hi="स्कैम जाँच">Scam Checker</h2>
+        <p class="section-subtitle" data-en="Paste any SMS, WhatsApp, or email to check if it's safe" data-hi="यह सुरक्षित है या नहीं जाँचने के लिए किसी भी एसएमएस, व्हाट्सएप या ईमेल को पेस्ट करें">
+            Paste any SMS, WhatsApp, or email to check if it's safe
+        </p>
+        <div class="scam-interface">
+            <textarea 
+                class="scam-input" 
+                id="scamInput" 
+                placeholder="Paste your message here... (SMS, WhatsApp, Email)"
+                rows="6"
+                aria-label="Message to check for scams"
+                data-placeholder-en="Paste your message here... (SMS, WhatsApp, Email)"
+                data-placeholder-hi="यहां अपना संदेश पेस्ट करें... (SMS, व्हाट्सएप, ईमेल)"
+            ></textarea>
+            <button class="btn btn-primary btn-large" id="checkScamBtn">
+                <span class="btn-icon">🔍</span>
+                <span class="btn-text" data-en="Check if this is a Scam" data-hi="जाँचें कि यह स्कैम है या नहीं">Check if this is a Scam</span>
+            </button>
+            <div class="scam-result" id="scamResult" role="alert" aria-live="assertive"></div>
+        </div>
+    </div>
+</section>

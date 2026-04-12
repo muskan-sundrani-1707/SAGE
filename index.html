@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAGE – Smart Assistance for Guided Education</title>
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/sections.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <div class="accessibility-bar" id="accessibilityBar">
+        <button class="accessibility-btn" id="languageToggle" title="Toggle Language">
+            <span class="btn-icon">🌐</span>
+            <span class="btn-text" data-en="English / हिंदी" data-hi="English / हिंदी">English / हिंदी</span>
+        </button>
+        <button class="accessibility-btn" id="largeTextToggle" title="Large Text Mode">
+            <span class="btn-icon">🔤</span>
+            <span class="btn-text" data-en="Large Text" data-hi="बड़ा टेक्स्ट">Large Text</span>
+        </button>
+        <button class="accessibility-btn" id="voiceNarrationBtn" title="Voice Narration">
+            <span class="btn-icon">🔊</span>
+            <span class="btn-text" data-en="Listen" data-hi="सुनें">Listen</span>
+        </button>
+    </div>
+
+    <header class="header">
+        <div class="container header-inner">
+            <a href="#home" class="logo-block">
+                <span class="logo-icon">👵💡</span>
+                <span class="logo-text">SAGE</span>
+                <span class="logo-tagline" data-en="Smart Assistance for Guided Education" data-hi="मार्गदर्शित शिक्षा के लिए स्मार्ट सहायता">Smart Assistance for Guided Education</span>
+            </a>
+            <nav class="nav" aria-label="Main navigation">
+                <a href="#home" class="nav-link" data-en="Home" data-hi="होम">Home</a>
+                <a href="#voice" class="nav-link" data-en="Voice Assistant" data-hi="आवाज़ सहायक">Voice Assistant</a>
+                <a href="#scam" class="nav-link" data-en="Scam Checker" data-hi="स्कैम जाँच">Scam Checker</a>
+                <a href="#learn" class="nav-link" data-en="Learn" data-hi="सीखें">Learn</a>
+                <a href="#about" class="nav-link" data-en="About" data-hi="हमारे बारे में">About</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section id="home" class="section hero-section">
+            <div class="container hero-content">
+                <div class="hero-text">
+                    <h1 class="hero-title" data-en="Simplifying Technology for Seniors" data-hi="वरिष्ठ नागरिकों के लिए तकनीक को सरल बनाना">
+                        Simplifying Technology for Seniors
+                    </h1>
+                    <div class="hero-buttons">
+                        <a href="#voice" class="btn btn-primary btn-large">
+                            <span class="btn-icon">🎤</span>
+                            <span class="btn-text" data-en="Start Voice Assistant" data-hi="वॉइस असिस्टेंट शुरू करें">Start Voice Assistant</span>
+                        </a>
+                        <a href="#scam" class="btn btn-secondary btn-large">
+                            <span class="btn-icon">📩</span>
+                            <span class="btn-text" data-en="Check Message for Scam" data-hi="संदेश स्कैम के लिए जाँचें">Check Message for Scam</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="hero-illustration">
+                    <div class="illustration-placeholder">
+                        <span class="illustration-icon">👵</span>
+                        <span class="illustration-icon">📱</span>
+                        <p class="illustration-text" data-en="Elderly person using smartphone" data-hi="स्मार्टफोन का उपयोग करते हुए">Using technology confidently</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="voice" class="section voice-section">
+            <div class="container">
+                <h2 class="section-title" data-en="Voice Assistant" data-hi="आवाज़ सहायक">Voice Assistant</h2>
+                <p class="section-subtitle" data-en="Speak naturally - we'll help you with digital tasks" data-hi="स्वाभाविक रूप से बोलें - हम डिजिटल कार्यों में मदद करेंगे">
+                    Speak naturally – we'll help you with digital tasks
+                </p>
+                <div class="voice-interface">
+                    <button class="mic-button" id="micButton" aria-label="Start speaking">
+                        <span class="mic-icon">🎤</span>
+                        <span class="mic-label" data-en="Tap to Speak" data-hi="बोलने के लिए टैप करें">Tap to Speak</span>
+                    </button>
+                    <div class="voice-box">
+                        <label class="voice-label" data-en="What you said:" data-hi="आपने क्या कहा:">What you said:</label>
+                        <div class="voice-textbox" id="speechText" role="status" aria-live="polite"></div>
+                    </div>
+                    <div class="voice-box">
+                        <label class="voice-label" data-en="Assistant response:" data-hi="सहायक जवाब:">Assistant response:</label>
+                        <div class="voice-textbox" id="responseText" role="status" aria-live="polite"></div>
+                    </div>
+                    <button class="btn btn-primary btn-large" id="speakResponseBtn">
+                        <span class="btn-icon">🔊</span>
+                        <span class="btn-text" data-en="Speak Response" data-hi="जवाब बोलें">Speak Response</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="scam" class="section scam-section">
+            <div class="container">
+                <h2 class="section-title" data-en="Scam Checker" data-hi="स्कैम जाँच">Scam Checker</h2>
+                <p class="section-subtitle" data-en="Paste any SMS, WhatsApp, or email to check if it's safe" data-hi="यह सुरक्षित है या नहीं जाँचने के लिए किसी भी एसएमएस, व्हाट्सएप या ईमेल को पेस्ट करें">
+                    Paste any SMS, WhatsApp, or email to check if it's safe
+                </p>
+                <div class="scam-interface">
+                    <textarea 
+                        class="scam-input" 
+                        id="scamInput" 
+                        placeholder="Paste your message here... (SMS, WhatsApp, Email)"
+                        rows="6"
+                        aria-label="Message to check for scams"
+                        data-placeholder-en="Paste your message here... (SMS, WhatsApp, Email)"
+                        data-placeholder-hi="यहां अपना संदेश पेस्ट करें... (SMS, व्हाट्सएप, ईमेल)"
+                    ></textarea>
+                    <button class="btn btn-primary btn-large" id="checkScamBtn">
+                        <span class="btn-icon">🔍</span>
+                        <span class="btn-text" data-en="Check if this is a Scam" data-hi="जाँचें कि यह स्कैम है या नहीं">Check if this is a Scam</span>
+                    </button>
+                    <div class="scam-result" id="scamResult" role="alert" aria-live="assertive"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="learn" class="section learn-section">
+            <div class="container">
+                <h2 class="section-title" data-en="Learn" data-hi="सीखें">Learn</h2>
+                <p class="section-subtitle" data-en="Simple tutorials to build your digital confidence" data-hi="अपने डिजिटल विश्वास का निर्माण करने के लिए सरल ट्यूटोरियल">
+                    Simple tutorials to build your digital confidence
+                </p>
+                <div class="learn-cards">
+                    <button class="learn-card" data-card="smartphone">
+                        <span class="card-icon">📱</span>
+                        <span class="card-title" data-en="Smartphone Basics" data-hi="स्मार्टफोन मूल बातें">Smartphone Basics</span>
+                    </button>
+                    <button class="learn-card" data-card="whatsapp">
+                        <span class="card-icon">💬</span>
+                        <span class="card-title" data-en="WhatsApp & Video Calls" data-hi="व्हाट्सएप और वीडियो कॉल">WhatsApp & Video Calls</span>
+                    </button>
+                    <button class="learn-card" data-card="upi">
+                        <span class="card-icon">💳</span>
+                        <span class="card-title" data-en="UPI Payments" data-hi="यूपीआई भुगतान">UPI Payments</span>
+                    </button>
+                    <button class="learn-card" data-card="safety">
+                        <span class="card-icon">🛡</span>
+                        <span class="card-title" data-en="Online Safety" data-hi="ऑनलाइन सुरक्षा">Online Safety</span>
+                    </button>
+                    <button class="learn-card" data-card="government">
+                        <span class="card-icon">🏛</span>
+                        <span class="card-title" data-en="Government Services" data-hi="सरकारी सेवाएं">Government Services</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="section about-section">
+            <div class="container">
+                <h2 class="section-title" data-en="About SAGE" data-hi="SAGE के बारे में">About SAGE</h2>
+                <div class="about-content">
+                    <p class="about-text" data-en="SAGE (Smart Assistance for Guided Education) is a voice-enabled digital literacy assistant designed to help senior citizens navigate technology with confidence. We believe everyone deserves access to the digital world." data-hi="SAGE (मार्गदर्शित शिक्षा के लिए स्मार्ट सहायता) एक आवाज-सक्षम डिजिटल साक्षरता सहायक है जो वरिष्ठ नागरिकों को आत्मविश्वास के साथ तकनीक का उपयोग करने में मदद करने के लिए डिज़ाइन किया गया है।">
+                        SAGE (Smart Assistance for Guided Education) is a voice-enabled digital literacy assistant designed to help senior citizens navigate technology with confidence. We believe everyone deserves access to the digital world.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-inner">
+            <div class="footer-section">
+                <h3 data-en="About SAGE Project" data-hi="SAGE प्रोजेक्ट के बारे में">About SAGE Project</h3>
+                <p data-en="Helping seniors embrace digital technology safely." data-hi="वरिष्ठ नागरिकों को सुरक्षित रूप से डिजिटल तकनीक अपनाने में मदद करना।">Helping seniors embrace digital technology safely.</p>
+            </div>
+            <div class="footer-section">
+                <h3 data-en="Digital Inclusion Mission" data-hi="डिजिटल समावेशन मिशन">Digital Inclusion Mission</h3>
+                <p data-en="Bridging the digital divide for all ages." data-hi="सभी उम्र के लिए डिजिटल विभाजन को पाटना।">Bridging the digital divide for all ages.</p>
+            </div>
+            <div class="footer-section">
+                <h3 data-en="Contact" data-hi="संपर्क">Contact</h3>
+                <p>contact@sage-project.org</p>
+            </div>
+            <div class="footer-section">
+                <h3>GitHub</h3>
+                <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="footer-link">View Project</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 SAGE – Smart Assistance for Guided Education. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <div class="modal-overlay" id="learnModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" hidden>
+        <div class="modal">
+            <button class="modal-close" id="modalClose" aria-label="Close">&times;</button>
+            <h2 class="modal-title" id="modalTitle"></h2>
+            <div class="modal-content" id="modalContent"></div>
+        </div>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/voice.js"></script>
+    <script src="js/scam.js"></script>
+    <script src="js/learn.js"></script>
+    <script src="js/accessibility.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
