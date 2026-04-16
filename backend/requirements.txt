@@ -1,0 +1,17 @@
+# API
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
+python-multipart>=0.0.6
+
+# ML – scam (TF-IDF + Logistic Regression) & survey (Random Forest)
+# Train and serve with the same sklearn major version; re-run train_* scripts after upgrading.
+scikit-learn>=1.3.0,<2
+pandas>=2.0.0
+numpy>=1.24.0
+joblib>=1.3.0
+
+# Speech (optional: heavy; install when you need /api/voice/transcribe)
+openai-whisper>=20231117
+
+# TTS
+gTTS>=2.5.0

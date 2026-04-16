@@ -1,0 +1,16 @@
+age,education_level,smartphone_usage,confidence_level,task_completion_time,outcome
+68,Primary,Yes,4,95,0
+72,Secondary,No,2,280,1
+65,Graduate,Yes,5,60,0
+70,None,No,1,400,1
+74,Primary,Yes,3,150,0
+69,Secondary,Yes,4,110,0
+66,Graduate,Yes,5,70,0
+71,Primary,No,2,320,1
+73,Secondary,Yes,3,200,0
+67,None,Yes,2,250,1
+75,Graduate,Yes,4,90,0
+64,Secondary,Yes,5,85,0
+76,Primary,Yes,2,300,1
+62,Graduate,Yes,5,55,0
+78,None,No,1,450,1
