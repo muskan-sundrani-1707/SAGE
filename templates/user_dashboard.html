@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SAGE – Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Noto+Sans+Devanagari:wght@400;600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sage.css') }}">
+<style>
+/* User-dashboard-specific overrides */
+.user-topbar{background:var(--teal);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;position:sticky;top:0;z-index:200;}
+.user-topbar-brand{display:flex;align-items:center;gap:10px;color:#fff;}
+.user-topbar-brand .icon{font-size:26px;background:rgba(255,255,255,.15);border-radius:10px;width:42px;height:42px;display:grid;place-items:center;}
+.user-topbar-brand .name{font-family:var(--font-display);font-size:22px;font-weight:var(--fw-blk);}
+.user-topbar-right{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.topbar-username{color:rgba(255,255,255,.85);font-size:15px;font-weight:var(--fw-med);}
+.topbar-btn{background:rgba(255,255,255,.15);color:#fff;border:2px solid rgba(255,255,255,.3);
+  border-radius:50px;padding:8px 18px;font-size:15px;font-weight:var(--fw-med);cursor:pointer;transition:var(--transition);}
+.topbar-btn:hover{background:rgba(255,255,255,.28);}
+.topbar-btn.logout{background:rgba(192,57,43,.35);border-color:rgba(192,57,43,.5);}
+.topbar-btn.logout:hover{background:var(--danger);}
+/* Welcome card */
+.welcome-bar{background:linear-gradient(135deg,var(--teal) 0%,var(--teal-l) 100%);color:#fff;
+  padding:40px 32px;margin-bottom:0;}
+.welcome-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+.welcome-text h1{font-family:var(--font-display);font-size:var(--fs-lg);font-weight:var(--fw-blk);margin-bottom:8px;}
+.welcome-text p{font-size:var(--fs-sm);opacity:.9;}
+.welcome-badge{background:rgba(255,255,255,.15);border-radius:var(--radius-lg);padding:16px 24px;text-align:center;flex-shrink:0;}
+.welcome-badge .lvl{font-family:var(--font-display);font-size:var(--fs-md);font-weight:var(--fw-bld);}
+.welcome-badge .sub{font-size:13px;opacity:.85;}
+/* a11y mini-bar */
+.mini-a11y{background:var(--teal-d);padding:8px 24px;display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;}
+.mini-a11y button{background:rgba(255,255,255,.12);color:rgba(255,255,255,.9);border:1px solid rgba(255,255,255,.25);
+  border-radius:50px;padding:6px 14px;font-size:14px;cursor:pointer;transition:var(--transition);}
+.mini-a11y button:hover{background:rgba(255,255,255,.22);}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="user-topbar">
+  <div class="user-topbar-brand">
+    <div class="icon">🦉</div>
+    <span class="name">SAGE</span>
+  </div>
+  <div class="user-topbar-right">
+    <span class="topbar-username">👤 {{ display_name }}</span>
+    <button type="button" class="topbar-btn" id="langBtn">🌐 हिंदी</button>
+    <button type="button" class="topbar-btn" id="textSizeBtn">🔤 Large Text</button>
+    <a href="{{ url_for('user_logout') }}" class="topbar-btn logout">Logout</a>
+  </div>
+</div>
+
+<!-- WELCOME BAR -->
+<div class="welcome-bar">
+  <div class="welcome-inner">
+    <div class="welcome-text">
+      <h1 data-en="Namaste, {{ display_name }}! 🙏" data-hi="नमस्ते, {{ display_name }}! 🙏">Namaste, {{ display_name }}! 🙏</h1>
+      <p data-en="Your personal digital literacy companion. Use the tools below to learn, stay safe, and get help." data-hi="आपका व्यक्तिगत डिजिटल साक्षरता साथी। सीखने, सुरक्षित रहने और सहायता पाने के लिए नीचे दिए गए उपकरणों का उपयोग करें।">Your personal digital literacy companion. Use the tools below to learn, stay safe, and get help.</p>
+    </div>
+    {% if profile and profile.difficulty_level %}
+    <div class="welcome-badge">
+      <div class="lvl">{{ {'Low Assistance':'🟢 Independent','Medium Assistance':'🟡 Guided','High Assistance':'🔴 Full Support'}[profile.difficulty_level] }}</div>
+      <div class="sub" data-en="Your assistance level" data-hi="आपका सहायता स्तर">Your assistance level</div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<main>
+
+<!-- ASSESS -->
+<section id="assess" class="section assess-section">
+  <div class="section-wrap">
+    <div class="section-head">
+      <h2 data-en="📊 Digital Difficulty Assessment" data-hi="📊 डिजिटल कठिनाई मूल्यांकन">📊 Digital Difficulty Assessment</h2>
+      <p data-en="Tell us about yourself so SAGE can personalise your experience." data-hi="SAGE को अपने बारे में बताएं ताकि वह आपका अनुभव व्यक्तिगत कर सके।">Tell us about yourself so SAGE can personalise your experience.</p>
+    </div>
+    <div class="assess-card">
+      <div class="assess-grid">
+        <div class="field-group">
+          <label class="field-label" data-en="Your Age" data-hi="आपकी उम्र">Your Age</label>
+          <input type="number" id="ageInput" class="field-input" min="18" max="100"
+            value="{{ profile.age if profile and profile.age else 65 }}" placeholder="e.g. 65">
+        </div>
+        <div class="field-group">
+          <label class="field-label" data-en="Education Level" data-hi="शिक्षा स्तर">Education Level</label>
+          <select id="eduSelect" class="field-input">
+            <option value="none">No formal education</option>
+            <option value="primary">Primary (up to Class 5)</option>
+            <option value="secondary" {% if not profile or profile.education == 'secondary' %}selected{% endif %}>Secondary (up to Class 10)</option>
+            <option value="graduate" {% if profile and profile.education == 'graduate' %}selected{% endif %}>Graduate or above</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label" data-en="Smartphone Usage" data-hi="स्मार्टफोन उपयोग">Smartphone Usage</label>
+          <select id="useSelect" class="field-input">
+            <option value="never">Never used</option>
+            <option value="rarely">Rarely</option>
+            <option value="sometimes" {% if not profile or profile.smartphone_use == 'sometimes' %}selected{% endif %}>Sometimes</option>
+            <option value="daily" {% if profile and profile.smartphone_use == 'daily' %}selected{% endif %}>Daily</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label" data-en="Confidence (1–10)" data-hi="आत्मविश्वास (1–10)">Confidence (1–10)</label>
+          <div class="slider-wrap">
+            <input type="range" id="confSlider" class="conf-slider" min="1" max="10"
+              value="{{ profile.confidence_score if profile and profile.confidence_score else 5 }}">
+            <span class="slider-val" id="sliderVal">{{ profile.confidence_score if profile and profile.confidence_score else 5 }}</span>
+          </div>
+        </div>
+      </div>
+      <button class="sage-btn primary-btn" id="assessBtn">
+        <span>🔍</span> <span data-en="Assess My Digital Level" data-hi="मेरा डिजिटल स्तर जाँचें">Assess My Digital Level</span>
+      </button>
+      <div class="assess-result" id="assessResult" hidden>
+        <div class="result-icon" id="resultIcon"></div>
+        <div class="result-body">
+          <div class="result-level" id="resultLevel"></div>
+          <div class="result-advice" id="resultAdvice"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VOICE -->
+<section id="voice" class="section voice-section">
+  <div class="section-wrap">
+    <div class="section-head">
+      <h2 data-en="🎤 Voice Assistant" data-hi="🎤 आवाज़ सहायक">🎤 Voice Assistant</h2>
+      <p data-en="Speak naturally — ask about WhatsApp, UPI, safety, and more." data-hi="स्वाभाविक रूप से बोलें — व्हाट्सएप, UPI, सुरक्षा आदि के बारे में पूछें।">Speak naturally — ask about WhatsApp, UPI, safety, and more.</p>
+    </div>
+    <div class="voice-wrap">
+      <div class="mic-ring" id="micRing">
+        <button class="mic-btn" id="micBtn" aria-label="Start speaking">
+          <span class="mic-emoji" id="micEmoji">🎤</span>
+        </button>
+      </div>
+      <p class="mic-hint" id="micHint" data-en="Tap to speak" data-hi="बोलने के लिए टैप करें">Tap to speak</p>
+      <div class="voice-panels">
+        <div class="voice-panel">
+          <div class="panel-label" data-en="You said:" data-hi="आपने कहा:">You said:</div>
+          <div class="panel-box" id="voiceInput" aria-live="polite">…</div>
+        </div>
+        <div class="panel-divider">→</div>
+        <div class="voice-panel">
+          <div class="panel-label" data-en="SAGE says:" data-hi="SAGE कहता है:">SAGE says:</div>
+          <div class="panel-box" id="voiceResponse" aria-live="polite">…</div>
+        </div>
+      </div>
+      <div class="voice-actions">
+        <button class="sage-btn secondary-btn" id="speakBtn">🔊 <span data-en="Read Aloud" data-hi="ज़ोर से पढ़ें">Read Aloud</span></button>
+        <button class="sage-btn ghost-btn" id="clearVoiceBtn">🗑 <span data-en="Clear" data-hi="साफ़ करें">Clear</span></button>
+      </div>
+      <div class="quick-prompts">
+        <p class="qp-label" data-en="Quick Questions:" data-hi="त्वरित प्रश्न:">Quick Questions:</p>
+        <div class="qp-chips">
+          <button class="qp-chip" data-q-en="How to make a video call?" data-q-hi="वीडियो कॉल कैसे करें?">📹 Video Call</button>
+          <button class="qp-chip" data-q-en="What is UPI?" data-q-hi="UPI क्या है?">💳 UPI</button>
+          <button class="qp-chip" data-q-en="How to use WhatsApp?" data-q-hi="WhatsApp कैसे चलाएं?">💬 WhatsApp</button>
+          <button class="qp-chip" data-q-en="How to stay safe from scams?" data-q-hi="स्कैम से कैसे बचें?">🛡 Scam Safety</button>
+          <button class="qp-chip" data-q-en="How to connect to internet?" data-q-hi="इंटरनेट से कैसे जुड़ें?">📶 Internet</button>
+          <button class="qp-chip" data-q-en="How to use Google Pay?" data-q-hi="Google Pay कैसे चलाएं?">📲 Google Pay</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCAM CHECKER -->
+<section id="scam" class="section scam-section">
+  <div class="section-wrap">
+    <div class="section-head">
+      <h2 data-en="🛡 Scam Checker" data-hi="🛡 स्कैम जाँचकर्ता">🛡 Scam Checker</h2>
+      <p data-en="Paste any SMS, WhatsApp message, or email. Our ML model will analyse it." data-hi="कोई भी SMS, WhatsApp या ईमेल पेस्ट करें। हमारा ML मॉडल इसे विश्लेषण करेगा।">Paste any SMS, WhatsApp message, or email. Our ML model will analyse it.</p>
+    </div>
+    <div class="scam-wrap">
+      <div class="scam-card">
+        <textarea id="scamInput" class="scam-textarea"
+          placeholder="Paste your message here…" rows="5"
+          data-placeholder-en="Paste your message here…"
+          data-placeholder-hi="यहां अपना संदेश पेस्ट करें…"></textarea>
+        <div class="scam-actions">
+          <button class="sage-btn primary-btn" id="scamBtn">🔍 <span data-en="Analyse Message" data-hi="विश्लेषण करें">Analyse Message</span></button>
+          <button class="sage-btn ghost-btn" id="clearScamBtn">🗑 <span data-en="Clear" data-hi="साफ़ करें">Clear</span></button>
+        </div>
+        <div class="scam-result-wrap" id="scamResult" hidden>
+          <div class="scam-verdict" id="scamVerdict"></div>
+          <div class="scam-details" id="scamDetails"></div>
+          <div class="scam-keywords" id="scamKeywords"></div>
+        </div>
+      </div>
+      <div class="scam-examples">
+        <p class="ex-label" data-en="Try an example:" data-hi="उदाहरण आज़माएं:">Try an example:</p>
+        <div class="ex-chips">
+          <button class="ex-chip danger" data-msg="URGENT: Your SBI account has been SUSPENDED! Verify KYC immediately: bit.ly/sbi-kyc-now">⚠️ Suspicious</button>
+          <button class="ex-chip safe" data-msg="Hey Mom, will be home by 7pm for dinner. Don't worry!">✅ Normal</button>
+          <button class="ex-chip danger" data-msg="Congratulations! You have WON Rs 5,00,000! Send Aadhaar and bank details to claim.">🎰 Prize Scam</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LEARN -->
+<section id="learn" class="section learn-section">
+  <div class="section-wrap">
+    <div class="section-head">
+      <h2 data-en="📚 Learn Digital Skills" data-hi="📚 डिजिटल कौशल सीखें">📚 Learn Digital Skills</h2>
+      <p data-en="Simple step-by-step guides to build your digital confidence." data-hi="आपके डिजिटल आत्मविश्वास को बढ़ाने के लिए सरल चरण-दर-चरण मार्गदर्शिकाएं।">Simple step-by-step guides to build your digital confidence.</p>
+    </div>
+    <div class="learn-grid">
+      <button class="learn-card" data-topic="smartphone"><div class="lc-icon">📱</div><div class="lc-body"><div class="lc-title" data-en="Smartphone Basics" data-hi="स्मार्टफोन मूल बातें">Smartphone Basics</div><div class="lc-sub" data-en="Unlock, apps, volume, charging" data-hi="अनलॉक, ऐप, वॉल्यूम">Unlock, apps, volume, charging</div></div><span class="lc-arrow">→</span></button>
+      <button class="learn-card" data-topic="whatsapp"><div class="lc-icon">💬</div><div class="lc-body"><div class="lc-title" data-en="WhatsApp & Video Calls" data-hi="WhatsApp और वीडियो कॉल">WhatsApp & Video Calls</div><div class="lc-sub" data-en="Install, register, call family" data-hi="इंस्टॉल, रजिस्टर, परिवार">Install, register, call family</div></div><span class="lc-arrow">→</span></button>
+      <button class="learn-card" data-topic="upi"><div class="lc-icon">💳</div><div class="lc-body"><div class="lc-title" data-en="UPI Payments" data-hi="UPI भुगतान">UPI Payments</div><div class="lc-sub" data-en="Google Pay, PhonePe, safe tips" data-hi="Google Pay, PhonePe">Google Pay, PhonePe, safe tips</div></div><span class="lc-arrow">→</span></button>
+      <button class="learn-card" data-topic="safety"><div class="lc-icon">🛡</div><div class="lc-body"><div class="lc-title" data-en="Online Safety" data-hi="ऑनलाइन सुरक्षा">Online Safety</div><div class="lc-sub" data-en="OTP, PIN, scam alerts" data-hi="OTP, PIN, स्कैम अलर्ट">OTP, PIN, scam alerts</div></div><span class="lc-arrow">→</span></button>
+      <button class="learn-card" data-topic="government"><div class="lc-icon">🏛</div><div class="lc-body"><div class="lc-title" data-en="Government Services" data-hi="सरकारी सेवाएं">Government Services</div><div class="lc-sub" data-en="DigiLocker, UMANG, Aadhaar" data-hi="DigiLocker, UMANG">DigiLocker, UMANG, Aadhaar</div></div><span class="lc-arrow">→</span></button>
+      <button class="learn-card" data-topic="health"><div class="lc-icon">🏥</div><div class="lc-body"><div class="lc-title" data-en="Health Apps" data-hi="स्वास्थ्य ऐप">Health Apps</div><div class="lc-sub" data-en="Aarogya Setu, telemedicine" data-hi="आरोग्य सेतु, टेलीमेडिसिन">Aarogya Setu, telemedicine</div></div><span class="lc-arrow">→</span></button>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-wrap">
+    <div class="footer-col"><div class="footer-brand">🦉 SAGE</div><p>Smart Assistance for Guided Education. Bridging the digital divide for India's senior citizens.</p></div>
+    <div class="footer-col"><h4>Tech Stack</h4><p>Python · Flask · scikit-learn · TF-IDF · Random Forest · Web Speech API · SQLite</p></div>
+    <div class="footer-col"><h4>Contact</h4><p>contact@sage-project.org</p><p>Cybercrime Helpline: <strong>1930</strong></p></div>
+  </div>
+  <div class="footer-bottom"><p>© 2025 SAGE – All rights reserved · Logged in as <strong>{{ username }}</strong></p></div>
+</footer>
+
+</main>
+
+<!-- LEARN MODAL -->
+<div class="modal-backdrop" id="learnModal" hidden role="dialog" aria-modal="true" aria-labelledby="modalHeading">
+  <div class="modal-box">
+    <button class="modal-close" id="modalClose" aria-label="Close">✕</button>
+    <h2 class="modal-heading" id="modalHeading"></h2>
+    <div class="modal-body" id="modalBody"></div>
+    <button class="sage-btn secondary-btn modal-speak-btn" id="modalSpeakBtn">🔊 <span data-en="Read this to me" data-hi="मुझे यह पढ़ें">Read this to me</span></button>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/sage.js') }}"></script>
+<script>
+// Override initSession to use username
+userId = '{{ username }}';
+</script>
+</body>
+</html>

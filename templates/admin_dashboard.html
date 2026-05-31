@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SAGE – Admin Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sage.css') }}">
+<style>
+/* ── ADMIN THEME ── */
+:root{
+  --ad-bg:    #0d1b1a;
+  --ad-card:  #152322;
+  --ad-border:#1e3532;
+  --ad-text:  #e2f0ee;
+  --ad-muted: #7a9e9b;
+  --ad-accent:#2fa88e;
+  --ad-saf:   #FF7F11;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--ad-bg);color:var(--ad-text);font-family:'Source Sans 3',sans-serif;font-size:16px;line-height:1.6;}
+a{text-decoration:none;color:inherit;}
+button{cursor:pointer;font:inherit;border:none;background:none;}
+
+/* Top bar */
+.ad-topbar{background:var(--ad-card);border-bottom:2px solid var(--ad-border);
+  display:flex;align-items:center;justify-content:space-between;padding:0 28px;height:64px;position:sticky;top:0;z-index:100;}
+.ad-brand{display:flex;align-items:center;gap:12px;}
+.ad-brand-icon{width:40px;height:40px;background:linear-gradient(135deg,var(--ad-saf),var(--ad-accent));
+  border-radius:10px;display:grid;place-items:center;font-size:22px;}
+.ad-brand-name{font-family:'Baloo 2',sans-serif;font-size:22px;font-weight:800;color:#fff;}
+.ad-brand-badge{background:rgba(255,127,17,.2);color:var(--ad-saf);border:1px solid rgba(255,127,17,.35);
+  border-radius:50px;padding:3px 12px;font-size:13px;font-weight:600;margin-left:8px;}
+.ad-topbar-right{display:flex;align-items:center;gap:14px;}
+.ad-pill{font-size:14px;color:var(--ad-muted);}
+.ad-btn{background:rgba(255,255,255,.07);color:var(--ad-text);border:1px solid var(--ad-border);
+  border-radius:50px;padding:7px 18px;font-size:14px;font-weight:600;transition:.2s;}
+.ad-btn:hover{background:rgba(255,255,255,.13);}
+.ad-btn.logout{background:rgba(192,57,43,.25);color:#ff7b72;border-color:rgba(192,57,43,.4);}
+.ad-btn.logout:hover{background:rgba(192,57,43,.45);}
+.ad-btn.refresh{background:rgba(47,168,142,.2);color:var(--ad-accent);border-color:rgba(47,168,142,.35);}
+
+/* Layout */
+.ad-wrap{max-width:1280px;margin:0 auto;padding:32px 24px;}
+.ad-section-title{font-family:'Baloo 2',sans-serif;font-size:20px;font-weight:700;color:#fff;
+  margin-bottom:18px;display:flex;align-items:center;gap:10px;}
+.ad-section-title span{font-size:15px;color:var(--ad-muted);font-weight:400;}
+
+/* Stat cards */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:36px;}
+.stat-card{background:var(--ad-card);border:2px solid var(--ad-border);border-radius:16px;padding:24px 22px;}
+.stat-icon{font-size:30px;margin-bottom:10px;}
+.stat-val{font-family:'Baloo 2',sans-serif;font-size:38px;font-weight:800;color:#fff;line-height:1;}
+.stat-label{font-size:14px;color:var(--ad-muted);margin-top:6px;}
+.stat-card.green{border-color:rgba(47,168,142,.4);}  .stat-card.green .stat-val{color:var(--ad-accent);}
+.stat-card.orange{border-color:rgba(255,127,17,.4);} .stat-card.orange .stat-val{color:var(--ad-saf);}
+.stat-card.red{border-color:rgba(192,57,43,.4);}     .stat-card.red .stat-val{color:#ff7b72;}
+.stat-card.blue{border-color:rgba(74,144,200,.4);}   .stat-card.blue .stat-val{color:#6ab4ff;}
+
+/* Tables */
+.ad-table-wrap{background:var(--ad-card);border:2px solid var(--ad-border);border-radius:16px;overflow:hidden;margin-bottom:36px;}
+.ad-table-head{padding:16px 22px;border-bottom:2px solid var(--ad-border);display:flex;align-items:center;justify-content:space-between;}
+.ad-table-head h3{font-family:'Baloo 2',sans-serif;font-size:17px;font-weight:700;color:#fff;}
+.ad-table-head p{font-size:14px;color:var(--ad-muted);}
+table{width:100%;border-collapse:collapse;}
+th{background:rgba(255,255,255,.04);padding:12px 18px;text-align:left;font-size:13px;font-weight:600;
+  color:var(--ad-muted);text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--ad-border);}
+td{padding:13px 18px;font-size:15px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:top;font-family:'Source Sans 3',sans-serif;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,.025);}
+.td-mono{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--ad-muted);}
+.badge{display:inline-block;padding:3px 10px;border-radius:50px;font-size:12px;font-weight:600;}
+.badge.scam-check {background:rgba(192,57,43,.2); color:#ff7b72;}
+.badge.voice-query{background:rgba(47,168,142,.2); color:var(--ad-accent);}
+.badge.assess     {background:rgba(255,127,17,.2); color:var(--ad-saf);}
+.badge.green{background:rgba(47,168,142,.2);color:var(--ad-accent);}
+.badge.orange{background:rgba(255,127,17,.2);color:var(--ad-saf);}
+.badge.red{background:rgba(192,57,43,.2);color:#ff7b72;}
+.badge.gray{background:rgba(255,255,255,.08);color:var(--ad-muted);}
+.truncate{max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+/* Daily activity bar chart */
+.bar-chart{display:flex;align-items:flex-end;gap:10px;height:100px;padding:16px 22px;}
+.bar-col{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;}
+.bar-fill{background:var(--ad-accent);border-radius:6px 6px 0 0;width:100%;transition:.3s;opacity:.85;}
+.bar-fill:hover{opacity:1;}
+.bar-label{font-size:11px;color:var(--ad-muted);white-space:nowrap;}
+.bar-val{font-size:12px;font-weight:600;color:#fff;}
+
+/* Diff dist pills */
+.diff-row{display:flex;gap:12px;flex-wrap:wrap;padding:16px 22px;}
+.diff-pill{flex:1;min-width:140px;background:rgba(255,255,255,.05);border:2px solid var(--ad-border);
+  border-radius:12px;padding:16px;text-align:center;}
+.diff-pill .dp-val{font-family:'Baloo 2',sans-serif;font-size:32px;font-weight:800;color:#fff;}
+.diff-pill .dp-lbl{font-size:13px;color:var(--ad-muted);margin-top:4px;}
+.diff-pill.low{border-color:rgba(47,168,142,.4);} .diff-pill.low .dp-val{color:var(--ad-accent);}
+.diff-pill.med{border-color:rgba(255,127,17,.4);} .diff-pill.med .dp-val{color:var(--ad-saf);}
+.diff-pill.hi {border-color:rgba(192,57,43,.4);} .diff-pill.hi  .dp-val{color:#ff7b72;}
+
+/* Two col layout */
+.ad-two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:36px;}
+@media(max-width:900px){.ad-two-col{grid-template-columns:1fr;} .stat-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:500px){.stat-grid{grid-template-columns:1fr;} .ad-wrap{padding:20px 14px;}}
+
+/* Live indicator */
+.live-dot{display:inline-block;width:8px;height:8px;background:#4ade80;border-radius:50%;
+  animation:blink 1.4s infinite;margin-right:6px;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* Privacy mask toggle */
+.mask-toggle{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.06);border:1px solid var(--ad-border);
+  border-radius:50px;padding:6px 14px;font-size:14px;color:var(--ad-muted);cursor:pointer;}
+.mask-toggle:hover{background:rgba(255,255,255,.1);color:var(--ad-text);}
+input[type=checkbox]{accent-color:var(--ad-accent);}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="ad-topbar">
+  <div class="ad-brand">
+    <div class="ad-brand-icon">🦉</div>
+    <span class="ad-brand-name">SAGE</span>
+    <span class="ad-brand-badge">🔐 Admin</span>
+  </div>
+  <div class="ad-topbar-right">
+    <span class="ad-pill"><span class="live-dot"></span> Live Dashboard</span>
+    <button class="ad-btn refresh" id="refreshBtn" onclick="location.reload()">↻ Refresh</button>
+    <a href="{{ url_for('user_login') }}" class="ad-btn">User Portal</a>
+    <a href="{{ url_for('admin_logout') }}" class="ad-btn logout">Logout</a>
+  </div>
+</div>
+
+<div class="ad-wrap">
+
+  <!-- KPI CARDS -->
+  <div class="ad-section-title">📊 Key Metrics <span>Auto-refreshes on reload</span></div>
+  <div class="stat-grid">
+    <div class="stat-card green">
+      <div class="stat-icon">👥</div>
+      <div class="stat-val" id="kpi-reg">{{ data.registered_users }}</div>
+      <div class="stat-label">Registered Users</div>
+    </div>
+    <div class="stat-card blue">
+      <div class="stat-icon">🕐</div>
+      <div class="stat-val" id="kpi-sessions">{{ data.active_sessions }}</div>
+      <div class="stat-label">Active Sessions (no logout)</div>
+    </div>
+    <div class="stat-card orange">
+      <div class="stat-icon">📊</div>
+      <div class="stat-val" id="kpi-anon">{{ data.anonymous_sessions }}</div>
+      <div class="stat-label">Anonymous Assessments</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">⚡</div>
+      <div class="stat-val">{{ data.total_interactions }}</div>
+      <div class="stat-label">Total Interactions</div>
+    </div>
+    <div class="stat-card red">
+      <div class="stat-icon">🛡</div>
+      <div class="stat-val">{{ data.scam_checks }}</div>
+      <div class="stat-label">Scam Checks</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-icon">🎤</div>
+      <div class="stat-val">{{ data.voice_queries }}</div>
+      <div class="stat-label">Voice Queries</div>
+    </div>
+    <div class="stat-card orange">
+      <div class="stat-icon">📋</div>
+      <div class="stat-val">{{ data.assessments }}</div>
+      <div class="stat-label">Difficulty Assessments</div>
+    </div>
+    <div class="stat-card blue">
+      <div class="stat-icon">🔗</div>
+      <div class="stat-val">{{ data.total_sessions }}</div>
+      <div class="stat-label">Total Login Sessions</div>
+    </div>
+  </div>
+
+  <!-- TWO-COL: Daily Activity + Difficulty Distribution -->
+  <div class="ad-two-col">
+
+    <!-- Daily activity -->
+    <div class="ad-table-wrap">
+      <div class="ad-table-head"><h3>📅 Daily Activity (Last 7 Days)</h3></div>
+      {% if data.daily_activity %}
+        {% set max_cnt = data.daily_activity | map(attribute='cnt') | max %}
+        <div class="bar-chart">
+          {% for row in data.daily_activity | reverse %}
+          <div class="bar-col">
+            <div class="bar-val">{{ row.cnt }}</div>
+            <div class="bar-fill" style="height:{{ [((row.cnt / max_cnt) * 70) | int, 4] | max }}px"></div>
+            <div class="bar-label">{{ row.day[5:] }}</div>
+          </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p style="padding:20px;color:var(--ad-muted)">No activity yet.</p>
+      {% endif %}
+    </div>
+
+    <!-- Difficulty distribution -->
+    <div class="ad-table-wrap">
+      <div class="ad-table-head"><h3>🎯 Difficulty Level Distribution</h3></div>
+      {% set diff_map = {} %}
+      {% for row in data.difficulty_dist %}{% set _ = diff_map.update({row.difficulty_level: row.cnt}) %}{% endfor %}
+      <div class="diff-row">
+        <div class="diff-pill low">
+          <div class="dp-val">{{ diff_map.get('Low Assistance', 0) }}</div>
+          <div class="dp-lbl">🟢 Low Assistance</div>
+        </div>
+        <div class="diff-pill med">
+          <div class="dp-val">{{ diff_map.get('Medium Assistance', 0) }}</div>
+          <div class="dp-lbl">🟡 Medium Assistance</div>
+        </div>
+        <div class="diff-pill hi">
+          <div class="dp-val">{{ diff_map.get('High Assistance', 0) }}</div>
+          <div class="dp-lbl">🔴 High Assistance</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REGISTERED USERS TABLE -->
+  <div class="ad-table-wrap">
+    <div class="ad-table-head">
+      <div>
+        <h3>👤 Registered Users</h3>
+        <p>{{ data.registered_users }} accounts · Email shown — no passwords stored in plain text</p>
+      </div>
+      <label class="mask-toggle"><input type="checkbox" id="maskEmails" checked> Mask emails</label>
+    </div>
+    {% if data.users_list %}
+    <div style="overflow-x:auto;">
+    <table>
+      <thead><tr>
+        <th>#</th><th>Username</th><th>Display Name</th>
+        <th>Email</th><th>Created</th><th>Last Login</th>
+      </tr></thead>
+      <tbody>
+      {% for u in data.users_list %}
+      <tr>
+        <td class="td-mono">{{ u.id }}</td>
+        <td><strong>{{ u.username }}</strong></td>
+        <td>{{ u.display_name or '—' }}</td>
+        <td class="email-cell td-mono">{{ u.email or '—' }}</td>
+        <td class="td-mono">{{ u.created_at[:16] if u.created_at else '—' }}</td>
+        <td class="td-mono">{{ u.last_login[:16] if u.last_login else 'Never' }}</td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    </div>
+    {% else %}
+    <p style="padding:20px;color:var(--ad-muted)">No registered users yet.</p>
+    {% endif %}
+  </div>
+
+  <!-- USER PROFILES (anonymous assessments) -->
+  <div class="ad-table-wrap">
+    <div class="ad-table-head">
+      <div>
+        <h3>📊 User Profiles (Assessment Data)</h3>
+        <p>Anonymised assessment data — user_id masked to first 8 chars</p>
+      </div>
+    </div>
+    {% if data.profiles %}
+    <div style="overflow-x:auto;">
+    <table>
+      <thead><tr>
+        <th>User ID</th><th>Age</th><th>Education</th>
+        <th>Phone Use</th><th>Confidence</th><th>Level</th><th>Date</th>
+      </tr></thead>
+      <tbody>
+      {% for p in data.profiles %}
+      <tr>
+        <td class="td-mono">{{ p.user_id[:8] }}…</td>
+        <td>{{ p.age or '—' }}</td>
+        <td>{{ p.education or '—' }}</td>
+        <td>{{ p.smartphone_use or '—' }}</td>
+        <td>{{ p.confidence_score or '—' }}/10</td>
+        <td>
+          {% if p.difficulty_level == 'Low Assistance' %}<span class="badge green">🟢 Low</span>
+          {% elif p.difficulty_level == 'Medium Assistance' %}<span class="badge orange">🟡 Medium</span>
+          {% elif p.difficulty_level == 'High Assistance' %}<span class="badge red">🔴 High</span>
+          {% else %}<span class="badge gray">—</span>{% endif %}
+        </td>
+        <td class="td-mono">{{ p.created_at[:10] if p.created_at else '—' }}</td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    </div>
+    {% else %}
+    <p style="padding:20px;color:var(--ad-muted)">No profiles yet.</p>
+    {% endif %}
+  </div>
+
+  <!-- RECENT INTERACTIONS (last 50) -->
+  <div class="ad-table-wrap">
+    <div class="ad-table-head">
+      <div>
+        <h3>⚡ Recent Interactions <span style="font-size:14px;color:var(--ad-muted)">(last 50)</span></h3>
+        <p>Input text truncated to 200 chars for privacy · Raw input is stored in DB</p>
+      </div>
+      <label class="mask-toggle"><input type="checkbox" id="maskInput" checked> Mask input</label>
+    </div>
+    {% if data.recent_interactions %}
+    <div style="overflow-x:auto;">
+    <table>
+      <thead><tr>
+        <th>ID</th><th>User</th><th>Type</th>
+        <th>Input</th><th>Response</th><th>Time</th>
+      </tr></thead>
+      <tbody>
+      {% for i in data.recent_interactions %}
+      <tr>
+        <td class="td-mono">{{ i.id }}</td>
+        <td class="td-mono">{{ i.user_id[:10] if i.user_id else '—' }}</td>
+        <td><span class="badge {{ i.action_type.replace('_','-') }}">{{ i.action_type }}</span></td>
+        <td class="truncate input-cell" title="{{ i.input_text }}">
+          {% if i.input_text %}{{ i.input_text[:60] }}{% if i.input_text|length > 60 %}…{% endif %}{% else %}—{% endif %}
+        </td>
+        <td class="truncate" title="{{ i.response }}">
+          {% if i.response %}{{ i.response[:60] }}{% if i.response|length > 60 %}…{% endif %}{% else %}—{% endif %}
+        </td>
+        <td class="td-mono">{{ i.timestamp[:16] if i.timestamp else '—' }}</td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    </div>
+    {% else %}
+    <p style="padding:20px;color:var(--ad-muted)">No interactions yet.</p>
+    {% endif %}
+  </div>
+
+  <div style="text-align:center;padding:20px 0;color:var(--ad-muted);font-size:14px;">
+    SAGE Admin Dashboard · Data refreshed on page load · 
+    <a href="{{ url_for('admin_api_stats') }}" style="color:var(--ad-accent)">Raw JSON API →</a>
+  </div>
+
+</div><!-- /ad-wrap -->
+
+<script>
+// Email masking
+const maskEmailsCb = document.getElementById('maskEmails');
+function toggleEmails(){
+  document.querySelectorAll('.email-cell').forEach(td=>{
+    const orig = td.dataset.orig || td.textContent.trim();
+    td.dataset.orig = orig;
+    if(orig === '—'){td.textContent='—';return;}
+    td.textContent = maskEmailsCb.checked
+      ? orig.replace(/(.{2})[^@]+(@.+)/, '$1***$2')
+      : orig;
+  });
+}
+maskEmailsCb.addEventListener('change', toggleEmails);
+toggleEmails();
+
+// Input masking
+const maskInputCb = document.getElementById('maskInput');
+function toggleInput(){
+  document.querySelectorAll('.input-cell').forEach(td=>{
+    const orig = td.dataset.orig || td.textContent.trim();
+    td.dataset.orig = orig;
+    td.textContent = maskInputCb.checked
+      ? (orig.length > 12 ? orig.slice(0,6)+'••••••' : '••••••')
+      : orig;
+  });
+}
+maskInputCb.addEventListener('change', toggleInput);
+toggleInput();
+
+// Auto-refresh every 60s
+setTimeout(()=>location.reload(), 60000);
+</script>
+</body>
+</html>
